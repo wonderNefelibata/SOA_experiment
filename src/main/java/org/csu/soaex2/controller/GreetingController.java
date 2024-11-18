@@ -22,6 +22,7 @@ public class GreetingController {
 
         // 添加超媒体链接
         Link selfLink = linkTo(methodOn(GreetingController.class).exampleApi()).withSelfRel(); // 当前 API 的链接
+
         Link nextStepLink = Link.of("/api/next-step").withRel("next-step"); // 自定义的下一步链接
 
         response.addLinks(List.of(selfLink, nextStepLink));
