@@ -2,29 +2,29 @@ package org.csu.soaex2.common;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public class CommonResponse<T> extends RepresentationModel<CommonResponse<T>> {
 
-    private int status;
-    private String message;
-    private T data;
+    private int statusCode; // HTTP 状态码
+    private String message; // 响应信息
+    private T data; // 响应数据
 
-    public CommonResponse(int status, String message, T data) {
-        this.status = status;
+    // 私有构造方法，防止外部直接实例化
+    protected CommonResponse(int statusCode, String message, T data) {
+        this.statusCode = statusCode;
         this.message = message;
         this.data = data;
     }
 
-    public int getstatus() {
-        return status;
+    // Getters 和 Setters
+    public int getStatusCode() {
+        return statusCode;
     }
 
-    public void setstatus(int status) {
-        this.status = status;
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
     public String getMessage() {
@@ -43,29 +43,45 @@ public class CommonResponse<T> extends RepresentationModel<CommonResponse<T>> {
         this.data = data;
     }
 
-    // 添加 Hypermedia Link
+    // 添加超媒体链接
     public void addLinks(List<Link> links) {
         links.forEach(this::add);
     }
 
-    // 返回成功响应
-    public static <T> ResponseEntity<CommonResponse<T>> success(T data) {
-        CommonResponse<T> response = new CommonResponse<>(HttpStatus.OK.value(), "Success", data);
-        // 添加Hypermedia链接
-        response.addLinks(List.of(Link.of("/api/next-step").withRel("next-step")));  // 示例链接
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    // ============ 静态工厂方法 ============
+
+    /**
+     * 成功响应 (无数据)
+     */
+    public static <T> CommonResponse<T> success() {
+        return new CommonResponse<>(200, "Success", null);
     }
 
-    // 返回错误响应
-    public static <T> ResponseEntity<CommonResponse<T>> error(String message) {
-        CommonResponse<T> response = new CommonResponse<>(HttpStatus.BAD_REQUEST.value(), message, null);
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    /**
+     * 成功响应 (带数据)
+     */
+    public static <T> CommonResponse<T> success(T data) {
+        return new CommonResponse<>(200, "Success", data);
     }
 
-    // 返回创建响应
-    public static <T> ResponseEntity<CommonResponse<T>> created(T data) {
-        CommonResponse<T> response = new CommonResponse<>(HttpStatus.CREATED.value(), "Created", data);
-        response.addLinks(List.of(Link.of("/api/next-step").withRel("next-step"))); // 示例链接
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    /**
+     * 成功响应 (带数据和自定义消息)
+     */
+    public static <T> CommonResponse<T> success(String message, T data) {
+        return new CommonResponse<>(200, message, data);
+    }
+
+    /**
+     * 错误响应
+     */
+    public static <T> CommonResponse<T> error(int statusCode, String message) {
+        return new CommonResponse<>(statusCode, message, null);
+    }
+
+    /**
+     * 错误响应 (带数据)
+     */
+    public static <T> CommonResponse<T> error(int statusCode, String message, T data) {
+        return new CommonResponse<>(statusCode, message, data);
     }
 }
