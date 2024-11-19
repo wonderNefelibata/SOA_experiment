@@ -3,6 +3,7 @@ package org.csu.soaex2.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.csu.soaex2.entity.ReturnRecord;
+import org.csu.soaex2.mapper.BookInfoMapper;
 import org.csu.soaex2.mapper.ReturnRecordMapper;
 import org.csu.soaex2.service.ReturnRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,5 @@ public class ReturnRecordServiceImpl extends ServiceImpl<ReturnRecordMapper, Ret
         // 如果更新的记录数为1，则返回true，表示更新成功
         return updateCount == 1;
     }
-
 
 }
